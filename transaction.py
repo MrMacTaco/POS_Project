@@ -16,13 +16,13 @@ def addToTrans(trans,name,price):
 	global cost
 	item = [name,price]
 	trans.append(item)
-	cost += price
+	cost += int(price)
 	return trans
 
 #Removes specified item from the "transaction" list
 def removeFromTrans(trans,location):
 	global cost
-	cost -= trans[location][1]
+	cost -= int(trans[location][1])
 	del trans[location]
 	return trans
 
@@ -42,15 +42,29 @@ def addDecimal(value):
 
 ###############################################################################
 #Testing
+from inventoryManager import *
 a,cost = createTrans()
 print("Values of a:", a, "Cost: ",addDecimal(cost))
 
-addToTrans(a,"Hello",1500)
-print("Values of a:", a, "Cost: ",addDecimal(cost))
-addToTrans(a,"World",1000)
-print("Values of a:", a, "Cost: ",addDecimal(cost))
-
-removeFromTrans(a,0)
-print("Values of a:", a, "Cost: ",addDecimal(cost))
+while(True):
+	cmd = input("Select Transaction: 1.Add Name 2.Add ISBN 3.Remove 4.Finish\n")
+	if (cmd == "1"):
+		name = input("Add which item?\n")
+		item = searchName(name).split("|")
+		addToTrans(a,item[1],item[2])
+		print("Item " + item[1] + " added!")
+	elif (cmd == "2"):
+		name = input("Add which item?\n")
+		item = searchIsbn(name).split("|")
+		addToTrans(a,item[1],item[2])
+		print("Item " + item[1] + " added!")
+	elif(cmd == "3"):
+		location = int(input("Remove which item?\n"))
+		removeFromTrans(a,location)
+		print("Item " + name + " removed!")
+	elif(cmd == "4"):
+		break
+	else:
+		pass
 
 printTrans(a,cost)
