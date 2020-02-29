@@ -11,6 +11,7 @@ class transaction:
 	def __init__(self):
 		self.trans = []
 		self.cost = 0
+		self.discount = 1
 
 	#Adds an item to the "transaction" list, in the format of a list
 	def addToTrans(self,name,price):
@@ -34,10 +35,9 @@ class transaction:
 	def discountTrans(self,percent):
 		#Checks if percent is int or float and operates accordingly
 		if (1 <= percent <= 100):
-			discount = (100-percent)/100
-			self.cost = self.cost*discount
+			self.discount = (100-percent)/100
 		elif(0.01 <= percent < 1):
-			self.cost = cost*(1-percent)
+			self.discount = (1-percent)
 		else:
 			print("Invalid discount amount. Please try again.")
 
@@ -48,11 +48,21 @@ class transaction:
 		strNum = "$"+str(value)[:length-2]+"."+str(value)[length-2:]
 		return strNum
 
+	#Getter functions that just returns different variables
+	def getTrans(self):
+		return self.trans
+
 	def __str__(self):
 		return str(self.trans)
 
+	def getTax(self):
+		return int(self.cost*0.15*self.discount)
+
+	def getTotal(self):
+		return int(self.cost*1.15*self.discount)
+
 	def getCost(self):
-		return str(self.cost)
+		return str(self.cost*self.discount)
 
 ###############################################################################
 #Testing
