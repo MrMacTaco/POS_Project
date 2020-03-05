@@ -7,64 +7,60 @@
 #		  receipt to .txt when finished.
 ###############################################################################
 
-#Creates the empty "transaction" list
-def createTrans():
-	return [],0
+class transaction:
+	def __init__(self):
+		self.trans = []
+		self.cost = 0
+		self.discount = 1
 
-#Adds an item to the "transaction" list, in the format of a list
-def addToTrans(trans,name,price):
-	global cost
-	item = [name,price]
-	trans.append(item)
-	cost += int(price)
-	return trans
+	#Adds an item to the "transaction" list, in the format of a list
+	def addToTrans(self,name,price):
+		item = [name,price]
+		self.trans.append(item)
+		self.cost += int(price)
 
-#Removes specified item from the "transaction" list
-def removeFromTrans(trans,location):
-	global cost
-	cost -= int(trans[location][1])
-	del trans[location]
-	return trans
+	#Removes specified item from the "transaction" list
+	def removeFromTrans(self,location):
+		self.cost -= int(self.trans[location][1])
+		del self.trans[location]
 
-#Prints the entire "transaction" list out in a neat format
-def printTrans(trans,cost):
-	for i in trans:
-		print(str(i[0])+" "+addDecimal(str(i[1])))
-	print("Taxes are "+addDecimal(cost*0.15))
-	print("Total bill is "+addDecimal(cost*1.15))
+	#Prints the entire "transaction" list out in a neat format
+	def printTrans(self):
+		for i in self.trans:
+			print(str(i[0])+" "+self.addDecimal(str(i[1])))
+		print("Taxes are "+self.addDecimal(self.cost*0.15))
+		print("Total bill is "+self.addDecimal(self.cost*1.15))
 
-#Helper function to add decimal places into price strings when printing to user
-def addDecimal(value):
-	value = int(value)
-	length = len(str(value))
-	strNum = "$"+str(value)[:length-2]+"."+str(value)[length-2:]
-	return strNum
+	#Discounts the transaction
+	def discountTrans(self,percent):
+		#Checks if percent is int or float and operates accordingly
+		if (0 <= percent <= 100):
+			self.discount = (100-percent)/100
+		else:
+			print("Invalid discount amount. Please try again.")
 
-###############################################################################
-#Testing
-from inventoryManager import *
-a,cost = createTrans()
-print("Values of a:", a, "Cost: ",addDecimal(cost))
+	#Helper function to add decimal places into price strings when printing to user
+	def addDecimal(self,value):
+		value = int(value)
+		length = len(str(value))
+		strNum = "$"+str(value)[:length-2]+"."+str(value)[length-2:]
+		return strNum
 
-while(True):
-	cmd = input("Select Transaction: 1.Add Name 2.Add ISBN 3.Remove 4.Finish\n")
-	if (cmd == "1"):
-		name = input("Add which item?\n")
-		item = searchName(name).split("|")
-		addToTrans(a,item[1],item[2])
-		print("Item " + item[1] + " added!")
-	elif (cmd == "2"):
-		name = input("Add which item?\n")
-		item = searchIsbn(name).split("|")
-		addToTrans(a,item[1],item[2])
-		print("Item " + item[1] + " added!")
-	elif(cmd == "3"):
-		location = int(input("Remove which item?\n"))
-		removeFromTrans(a,location)
-		print("Item " + name + " removed!")
-	elif(cmd == "4"):
-		break
-	else:
-		pass
+	#Getter functions that just returns different variables
+	def getTrans(self):
+		return self.trans
 
-printTrans(a,cost)
+	def __str__(self):
+		return str(self.trans)
+
+	def getTax(self):
+		return int(self.cost*0.15*self.discount)
+
+	def getTotal(self):
+		return int(self.cost*1.15*self.discount)
+
+	def getCost(self):
+		return str(self.cost*self.discount)
+
+	def getDiscount(self):
+		return self.discount
