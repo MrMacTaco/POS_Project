@@ -1,9 +1,7 @@
 RECORD OF TRANSACTION
 ------------------------------
 Book                    $10.00
-Book                    $10.00
-Book                    $10.00
 ------------------------------
-DISCOUNT                    40%
-TAX                      $2.70
-TOTAL                   $20.69
+DISCOUNT                    0%
+TAX                      $1.50
+TOTAL                   $11.50

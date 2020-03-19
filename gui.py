@@ -64,9 +64,13 @@ def searchButton():
 def addItemTrans():
     global itemName, itemPrice
     if itemName == None:
-        return False
+        searchButton()
+        if itemName == None:
+            return False
     tPage.iList.addItemInt(itemName,itemPrice)
-    tPage.iList.lBox.curselection[0]
+    ## Select the new item
+    tPage.iList.lBox.selection_clear(0,tPage.iList.lBox.size())
+    tPage.iList.lBox.selection_set(tPage.iList.lBox.size()-1)
 def rmItemTrans():
     tPage.iList.rmItem()
 def editDiscount():
@@ -90,6 +94,9 @@ def chooseDisc(event):
         tPage.iList.updateItems()
         w.destroy()
 def resetSearchResult():
+    global itemName, itemPrice
+    itemName = None
+    itemPrice = None
     entryVar.set("")
     isbnVar.set("ISBN: ")
     nameVar.set("Title: ")
@@ -181,7 +188,7 @@ class itemList:
         self.totalLabel = Label(self.frame,textvariable=self.totalVar,anchor="e",
         bg=COL_DARK).grid(column=1,row=5,columnspan=3,sticky="ew")
 
-        self.confirm = Button(self.frame,text="Confirm",command=self.confirmButton,underline=0,bg=COL_CONFIRM)
+        self.confirm = Button(self.frame,text="Complete Transaction",command=self.confirmButton,underline=0,bg=COL_CONFIRM)
         self.confirm.grid(column=0,row=6 ,columnspan=3,sticky="nesw")
     def confirmButton(self):
         ## Export receipt
@@ -217,17 +224,21 @@ class itemList:
         string = name
         num = priceToString(cents)
         self.trans.addToTrans(name,cents)
-        ## Add spacing
-        ##string = string + " " * 2*(LEN_ITEM - (len(string) + len(num))) + num
-        ##self.items.append(string)
         self.updateItems()
     def rmItem(self):
-        if len(self.lBox.curselection()) > 0:
-            self.trans.removeFromTrans(self.lBox.curselection()[0])
+        selected = self.lBox.curselection()
+        if len(selected) > 0:
+            ## Take out the item
+            self.trans.removeFromTrans(selected[0])
+            ## Select the previous item
+            tPage.iList.lBox.selection_clear(0,tPage.iList.lBox.size())
+            next = max(selected[0]-1,0)
+            tPage.iList.lBox.selection_set(next,next)
             self.updateItems()
     def updateItems(self):
         l = []
         for item in self.trans.getTrans():
+            ## Add spacing
             num = priceToString(item[1])
             l.append(item[0] + (" " * 2 *(LEN_ITEM - (len(item[0]) + len(num)))) + num)
         self.listVar.set(l)
